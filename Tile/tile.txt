@@ -1,0 +1,10 @@
+"tile"
+{
+	"base"		"base"
+	"title"		"Tile"
+	"maps"		"^ti_"
+	"menusystem"	"1"
+	"workshopid"	""
+
+
+}

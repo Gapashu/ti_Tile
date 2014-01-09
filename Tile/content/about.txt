@@ -1,0 +1,17 @@
+--About--
+Tile is a gamemode made up of mashed together bits and pieces of code.
+
+--Collaborators--
+Beenston, Seke, Grand Master Nebuch, GiantPotato
+
+--Disclaimer--
+We do not own the music the music nor the stream that it's playing from so it may not be suitable for all age groups.
+
+--Log--
+(1/3/2014)Custom scoreboard created by Beenston.
+
+(1/2/2014)Keys created by GiantPotato.
+
+(1/2/2014)Shop and Kiosk created by Seke.
+
+(12/30/2013)Project started.

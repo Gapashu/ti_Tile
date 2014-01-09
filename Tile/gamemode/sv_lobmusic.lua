@@ -22,7 +22,6 @@ net.Broadcast()
 for k,v in pairs(player.GetAll()) do
 
 v:SendLua("chat.AddText(Color(255,0,0),'"..ply:Nick().."',Color(0,160,255),' Has changed the lobby volume to ',Color(0,250,0),'"..(Num*100).."','%!'    )"  )
-
 end
 
 return false

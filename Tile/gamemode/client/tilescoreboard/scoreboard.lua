@@ -46,6 +46,11 @@ function PANEL:PerformLayout()
 
 		panel:SetSize(self.PlayersFrame:GetWide(),32)
 		panel:SetPos(0,stack)
+		if id%2 == 0 then
+			panel:SetColor(Color(0,153,255,100))
+		else
+			panel:SetColor(Color(201,201,201,100))
+		end
 
 		stack = stack + SortedPlayerRows[id]:GetTall() + 3
 	end

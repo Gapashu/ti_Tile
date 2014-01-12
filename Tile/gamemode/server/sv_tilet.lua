@@ -1,4 +1,3 @@
-include("shared.lua")
 if CLIENT then return end
 if SERVER then print("sv_tilet loaded") end
 Foil = 60

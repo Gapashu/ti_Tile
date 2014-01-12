@@ -1,6 +1,5 @@
-include("shared.lua")
 if SERVER then return end
-sound.PlayURL ( "http://yp.shoutcast.com/sbin/tunein-station.pls?id=53937&play_status=1", "", function( station ) 
+sound.PlayURL ( "https://dl-web.dropbox.com/get/Public/01%20Power%20Move%20(Original%20Mix).mp3", "", function( station ) 
 if ( IsValid( station ) ) then
 
 station:Play()

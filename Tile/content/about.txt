@@ -1,5 +1,6 @@
 --About--
-Tile is a gamemode made up of mashed together bits and pieces of code.
+"We said 'Tile' because the whole gamemode was going to be like a 'puzzle', you said that if we made something, it would be a good addition; we should add it. A custom admin mod? Add it: Custom prop protection? Add it: Custom chat box? Add it: and all the parts of the mod will be like tiles that fit together." ~Seke
+
 
 --Collaborators--
 Beenston, Seke, Grand Master Nebuch, GiantPotato

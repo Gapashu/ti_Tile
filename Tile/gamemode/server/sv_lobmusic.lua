@@ -1,5 +1,3 @@
-include("shared.lua")
-
 if SERVER then
 util.AddNetworkString("Volume")
 print("sv_lob")

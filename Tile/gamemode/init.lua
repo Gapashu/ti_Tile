@@ -10,7 +10,6 @@ end
 for _,folder in pairs(sharedfolder) do
 	local subfolderfiles,subfolderfolders = file.Find("gamemodes/Tile/gamemode/shared/"..folder.."/*","GAME")
 	for _,file in pairs(subfolderfiles) do
-		include("shared/"..folder.."/"..file)
 		AddCSLuaFile("shared/"..folder.."/"..file)
 	end
 end

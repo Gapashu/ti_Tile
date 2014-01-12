@@ -1,5 +1,3 @@
-include("player_class/player_tile.lua")
-
 --------------------------------
 -- Set Player Class on Spawn! --
 --------------------------------

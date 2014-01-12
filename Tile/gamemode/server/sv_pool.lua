@@ -1,4 +1,3 @@
-include("shared.lua")
 if CLIENT then return end
 
 if SERVER then print("sv_pool loaded") end

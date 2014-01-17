@@ -9,9 +9,7 @@ local meta = FindMetaTable("Player")
 if CLIENT then return end
 
 if SERVER then
-util.AddNetworkString("Shop")
-util.AddNetworkString("HModel")
-util.AddNetworkString("Table")
+
 end
 
 
@@ -33,11 +31,7 @@ self:SetSolid(  SOLID_BBOX )
 self:CapabilitiesAdd( CAP_TURN_HEAD and CAP_ANIMATEDFACE ) 
 self:SetUseType( SIMPLE_USE )
 self:DropToFloor()
- self:SetMaxYawSpeed( 90 ) 
-print(self)
-net.Start("Shop")
-net.WriteEntity(self)
-net.Broadcast()
+ self:SetMaxYawSpeed( 900 ) 
 
 end
           
@@ -65,155 +59,94 @@ end
 function ENT:AcceptInput( Name, Activator, Caller )
 
 if Name == "Use" and Caller:IsPlayer() then
+
 self:EmitSound("vo/npc/female01/hi02.wav",100,100)
 Caller:SendLua("chat.AddText(Color(255,0,0),'[Phelynx]',Color(0,160,200),'Would you like to buy an apartment or load you room?' )")
 Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#ADoors.."',' Alpha rooms left!' )")
 Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#BDoors.."',' Beta rooms left!' )")
-PrintTable(ADoors)
+
+
 Caller:SendLua("Rents()")
 end
 
-end
---[[ POINT SYSTEM]]--
-
-function meta:GiveXP()
-timer.Create("xp",10*60,0,function()
-self:SetPData("xp",self:GetPData("xp")+5)
-
-
-umsg.Start("Point",self)
-umsg.Float(self:GetPData("xp"))
-umsg.End()
-
-end)
 end
 
 
 hook.Add("PlayerInitialSpawn","Points",function(ply)
 
-if(ply:GetPData("xp"))== nil then
-ply:SetPData("xp",0)
-ply:GiveXP()
-else
-ply:GiveXP()
+if(ply:GetPData("tilet"))== nil then
+ply:SetPData("tilet",20)
+ply:SetPData("OwnAlphaApartment",false)
+ply:SetPData("OwnBetaAPartment",false)
+ply:SetNWInt("Apartmentloaded",0)
 end
+
+
+
 end)
+
+function GiveApartment(ply,type)
+
+if(!ply) then return end
+if(!type) then return end
+
+if(type == "Alpha" ) then
+Door = table.Random(ADoors)
+Door:SetNWString("DOwner",ply:SteamID())
+table.remove(ADoors,table.KeyFromValue(ADoors,Door))
+end
+
+
+if(type == "Beta" ) then
+Door = table.Random(BDoors)
+Door:SetNWString("DOwner",ply:SteamID())
+table.remove(BDoors,table.KeyFromValue(BDoors,Door))
+end
+
+end
+
+
 
 function BuyAlpha(ply,cmd,arg)
 
-if(#ADoors == 0 )then return end 
+if(  ply:GetPData("OwnBetaApartment")  == true ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == true ) then print("ownsalpha") return end
+if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
+if( tonumber(ply:GetPData("tilet")) < A_PRICE-1 ) then print("cantafford") return end
 
-if(ply:GetPData("OA") ==1 ) then 
-ply:SendLua("chat.AddText(Color(255,0,0),'Your own an apartment already.' )")
-return end
-
-
-if(ply:GetNWInt("AL") == 1) then 
-ply:SendLua("chat.AddText(Color(255,0,0),'Your Apartment is already loaded.' )")
-return end
-
-
-
-if(tonumber(ply:GetPData("xp")) > A_PRICE - 1) then
-
-local door = table.Random(ADoors)
-door:SetNWString("DOwner",ply:SteamID())
-table.remove(ADoors,table.KeyFromValue(ADoors,door) )
-ply:SendLua("chat.AddText(Color(0,255,0),'Thanks for buying an apartment,I have',' "..tostring(#ADoors).. "Alpha Rooms Left' )")
-ply:SetPData("OA",1)
-ply:SetNWInt("AL",1)
-
+ply:SetPData("OwnAlphaApartment",true)
 ply:Give("keys")
+GiveApartment(ply,"Alpha")
+ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying an Alpha Apartment :)')")
+
+
 end
-
-
-
-end
-concommand.Add("buyalphaapartment",BuyAlpha)
+concommand.Add("BuyAlphaApartment",BuyAlpha)
 
 function BuyBeta(ply,cmd,arg)
 
-if(#BDoors == 0 )then return end 
-
-if(ply:GetPData("OA") ==1 or ply:GetPData("OB") ==1 ) then 
-ply:SendLua("chat.AddText(Color(255,0,0),'Your own an apartment already.' )")
-return end
-
-
-if(ply:GetNWInt("BL") == 1) then 
-ply:SendLua("chat.AddText(Color(255,0,0),'Your Apartment is already loaded.' )")
-return end
+if(  ply:GetPData("OwnBetaApartment")  == true ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == true ) then print("ownsalpha") return end
+if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
+if( tonumber(ply:GetPData("tilet")) < A_PRICE-1 ) then print("cantafford") return end
 
 
-
-if(tonumber(ply:GetPData("xp")) > B_PRICE - 1) then
-
-local door = table.Random(BDoors)
-door:SetNWString("DOwner",ply:SteamID())
-table.remove(ADoors,table.KeyFromValue(ADoors,door) )
-ply:SendLua("chat.AddText(Color(0,255,0),'Thanks for buying an apartment,I have',' "..tostring(#BDoors).. "Beta Rooms Left' )")
-ply:SetPData("OB",1)
-ply:SetNWInt("AL",1)
-
+ply:SetPData("OwnBetaApartment",true)
 ply:Give("keys")
+GiveApartment(ply,"Beta")
+ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying a Beta Apartment :)')")
+
 end
-
-
-
-end
-concommand.Add("buybetaapartment",BuyBeta)
+concommand.Add("BuyBetaApartment",BuyBeta)
 
 
 
 
 
 
-function LoadR(ply,cmd,arg)
-
-ply:Give("keys")
-
-if(#ADoors == 0 or #BDoors ==0 )then 
-print("no rooms")
-return 
-end
-
-if(ply:GetNWInt("AL") == 1 or ply:GetNWInt("BL")==1 ) then
-
-print("room loaded for this player")
-return 
-end
-
-if(tonumber(ply:GetPData("OA")) == 1 )then
-print("Loadinh")
-local door = table.Random(ADoors)
-door:SetNWString("DOwner",ply:SteamID())
-table.remove(ADoors,table.KeyFromValue(ADoors,door) )
-ply:SendLua("chat.AddText(Color(0,255,0),'I loaded your room.')")
-ply:SetNWInt("AL",1)
-LoadApartment(ply)
-end
-
-if(tonumber(ply:GetPData("OB")) == 1 )then
-print("Loadinh")
-local door = table.Random(BDoors)
-door:SetNWString("DOwner",ply:SteamID())
-table.remove(BDoors,table.KeyFromValue(BDoors,door) )
-ply:SendLua("chat.AddText(Color(0,255,0),'I loaded your room.')")
-ply:SetNWInt("AL",1)
-LoadApartment(ply)
-end
-
-
-
-print("loadran")
-end
-concommand.Add("loadapartment",LoadR)
-
-
-
-
-
-
+--[[---------------------
+--Dont Touch below here--
+--]]---------------------
 
 
 if( !sql.TableExists("apar") )then
@@ -243,25 +176,26 @@ end
 end
 concommand.Add("saveapartS",SaveApartment)
 
+
 function LoadApartment( ply, cmd, arg )
 
 for k,v in pairs( ents.GetAll() ) do
 
-if(v:GetNWString("DOwner") == ply:SteamID()) then DoorL = v:EntIndex() end
-end
-if(!sql.Query("SELECT * FROM apar WHERE id = '"..ply:UniqueID().."' ")) then return end
-for k,v in pairs(sql.Query("SELECT * FROM apar WHERE id = '"..ply:UniqueID().."' ") ) do
-if(v) then
-local po, an = LocalToWorld(util.StringToType(v["pos"],"Vector"),util.StringToType(v["ang"],"Angle"),Entity(DoorL):GetPos(),Entity(DoorL):GetAngles())
-
-local prop = ents.Create("prop_physics")
-prop:SetModel(v["mdl"])
-prop:SetPos(po )    
-prop:SetAngles(an)
-prop:SetMoveType(MOVETYPE_NONE)
-prop:Spawn()
-prop:SetMoveType(MOVETYPE_NONE)
-end
+    if(v:GetNWString("DOwner") == ply:SteamID()) then DoorL = v:EntIndex() end
 end
 
+    if(!sql.Query("SELECT * FROM apar WHERE id = '"..ply:UniqueID().."' ")) then return end
+        for k,v in pairs(sql.Query("SELECT * FROM apar WHERE id = '"..ply:UniqueID().."' ") ) do
+            if(v) then
+                local po, an = LocalToWorld(util.StringToType(v["pos"],"Vector"),util.StringToType(v["ang"],"Angle"),Entity(DoorL):GetPos(),Entity(DoorL):GetAngles())
+
+                local prop = ents.Create("prop_physics")
+                prop:SetModel(v["mdl"])
+                prop:SetPos(po )    
+                prop:SetAngles(an)
+                prop:SetMoveType(MOVETYPE_NONE)
+                prop:Spawn()
+                prop:SetMoveType(MOVETYPE_NONE)
+        end
+    end
 end

@@ -1,4 +1,4 @@
-"tile"
+"Tile!"
 {
 	"base"		"base"
 	"title"		"Tile"

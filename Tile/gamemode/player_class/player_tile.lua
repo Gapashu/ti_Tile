@@ -8,7 +8,7 @@ PLAYER.WalkSpeed = 200
 PLAYER.RunSpeed= 300
 
 function PLAYER:Spawn()
-BaseClass.Spawn( self )
+	BaseClass.Spawn( self )
 end
 
 

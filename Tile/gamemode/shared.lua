@@ -1,4 +1,4 @@
-GM.Name = "Tile!"
+GM.Name = "Tile"
 GM.Author = "Seke+Beenston"
 GM.Email = "N/A"
 GM.Website = "www.TehBuildBox.com"

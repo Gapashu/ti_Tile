@@ -109,12 +109,14 @@ end
 
 function BuyAlpha(ply,cmd,arg)
 
-if(  ply:GetPData("OwnBetaApartment")  == true ) then print("ownsbta") return end
-if(  ply:GetPData("OwnAlphaApartment") == true ) then print("ownsalpha") return end
+if(  ply:GetPData("OwnBetaApartment")  == "true" ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == "true" ) then print("ownsalpha") return end
 if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
 if( tonumber(ply:GetPData("tilet")) < A_PRICE-1 ) then print("cantafford") return end
+if(#ADoors == 0 ) then return end
 
 ply:SetPData("OwnAlphaApartment",true)
+ply:SetNWInt("ApartmentLoaded",1)
 ply:Give("keys")
 GiveApartment(ply,"Alpha")
 ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying an Alpha Apartment :)')")
@@ -125,13 +127,15 @@ concommand.Add("BuyAlphaApartment",BuyAlpha)
 
 function BuyBeta(ply,cmd,arg)
 
-if(  ply:GetPData("OwnBetaApartment")  == true ) then print("ownsbta") return end
-if(  ply:GetPData("OwnAlphaApartment") == true ) then print("ownsalpha") return end
+if(  ply:GetPData("OwnBetaApartment")  == "true" ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == "true" ) then print("ownsalpha") return end
 if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
 if( tonumber(ply:GetPData("tilet")) < A_PRICE-1 ) then print("cantafford") return end
+if(#BDoors == 0 ) then return end
 
 
 ply:SetPData("OwnBetaApartment",true)
+ply:SetNWInt("ApartmentLoaded",1)
 ply:Give("keys")
 GiveApartment(ply,"Beta")
 ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying a Beta Apartment :)')")

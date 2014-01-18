@@ -13,11 +13,16 @@ if SERVER then
 end
 
 
-A_PRICE = 10
-B_PRICE = 10
+A_PRICE = 500
+B_PRICE = 900
+D_PRICE = 1300
+G_PRICE = 5000
 
 ADoors = {}
 BDoors = {}
+DDoors = {}
+GDoors = {}
+
 
 PrintTable(ADoors)
 
@@ -64,7 +69,9 @@ self:EmitSound("vo/npc/female01/hi02.wav",100,100)
 Caller:SendLua("chat.AddText(Color(255,0,0),'[Phelynx]',Color(0,160,200),'Would you like to buy an apartment or load you room?' )")
 Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#ADoors.."',' Alpha rooms left!' )")
 Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#BDoors.."',' Beta rooms left!' )")
-
+Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#DDoors.."',' Delta rooms left!' )")
+Caller:SendLua("chat.AddText(Color(255,140,0),'I have ','"..#GDoors.."',' Gamma rooms left!' )")
+Caller:Give("keys")
 
 Caller:SendLua("Rents()")
 end
@@ -77,7 +84,9 @@ hook.Add("PlayerInitialSpawn","Points",function(ply)
 if(ply:GetPData("tilet"))== nil then
 ply:SetPData("tilet",20)
 ply:SetPData("OwnAlphaApartment",false)
-ply:SetPData("OwnBetaAPartment",false)
+ply:SetPData("OwnBetaApartment",false)
+ply:SetPData("OwnGammaApartment",false)
+ply:SetPData("OwnDeltaPartment",false)
 ply:SetNWInt("Apartmentloaded",0)
 end
 
@@ -91,16 +100,36 @@ if(!ply) then return end
 if(!type) then return end
 
 if(type == "Alpha" ) then
+if(#ADoors == 0 ) then return end
 Door = table.Random(ADoors)
 Door:SetNWString("DOwner",ply:SteamID())
 table.remove(ADoors,table.KeyFromValue(ADoors,Door))
+ply:SetNWInt("ApartmentLoaded",1)
 end
 
 
 if(type == "Beta" ) then
+if(#BDoors == 0 ) then return end
 Door = table.Random(BDoors)
 Door:SetNWString("DOwner",ply:SteamID())
 table.remove(BDoors,table.KeyFromValue(BDoors,Door))
+ply:SetNWInt("ApartmentLoaded",1)
+end
+
+if(type == "Delta" ) then
+if(#DDoors == 0 ) then return end
+Door = table.Random(DDoors)
+Door:SetNWString("DOwner",ply:SteamID())
+table.remove(DDoors,table.KeyFromValue(DDoors,Door))
+ply:SetNWInt("ApartmentLoaded",1)
+end
+
+if(type == "Gamma" ) then
+if(#GDoors == 0 ) then return end
+Door = table.Random(GDoors)
+Door:SetNWString("DOwner",ply:SteamID())
+table.remove(GDoors,table.KeyFromValue(GDoors,Door))
+ply:SetNWInt("ApartmentLoaded",1)
 end
 
 end
@@ -147,6 +176,56 @@ concommand.Add("BuyBetaApartment",BuyBeta)
 
 
 
+function BuyGamma(ply,cmd,arg)
+
+if(  ply:GetPData("OwnBetaApartment")  == "true" ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == "true" ) then print("ownsalpha") return end
+if(  ply:GetPData("OwnDeltaApartment") == "true" ) then print("ownsdelta") return end
+if(  ply:GetPData("OwnGammaApartment") == "true" ) then print("ownsGamma") return end
+if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
+if( tonumber(ply:GetPData("tilet")) < G_PRICE-1 ) then print("cantafford") return end
+if(#GDoors == 0 ) then return end
+
+
+ply:SetPData("OwnGammaApartment",true)
+ply:SetNWInt("ApartmentLoaded",1)
+ply:Give("keys")
+GiveApartment(ply,"Gamma")
+ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying a Gamma Apartment :)')")
+
+end
+concommand.Add("BuyGammaApartment",BuyGamma)
+
+
+
+
+
+function BuyDelta(ply,cmd,arg)
+
+if(  ply:GetPData("OwnBetaApartment")  == "true" ) then print("ownsbta") return end
+if(  ply:GetPData("OwnAlphaApartment") == "true" ) then print("ownsalpha") return end
+if(  ply:GetPData("OwnDeltaApartment") == "true" ) then print("ownsdelta") return end
+if(  ply:GetPData("OwnGammaApartment") == "true" ) then print("ownsGamma") return end
+if(  ply:GetNWInt("Apartmentloaded")   == 1    ) then print("apartmentwasloaded") return end
+if( tonumber(ply:GetPData("tilet")) < D_PRICE-1 ) then print("cantafford") return end
+if(#DDoors == 0 ) then return end
+
+
+ply:SetPData("OwnDeltaApartment",true)
+ply:SetNWInt("ApartmentLoaded",1)
+ply:Give("keys")
+GiveApartment(ply,"Delta")
+ply:SendLua("chat.AddText(Color(0,160,255),'Thanks for buying a Delta Apartment :)')")
+
+end
+concommand.Add("BuyDeltaApartment",BuyDelta)
+
+
+
+
+
+
+
 
 --[[---------------------
 --Dont Touch below here--
@@ -183,6 +262,17 @@ concommand.Add("saveapartS",SaveApartment)
 
 function LoadApartment( ply, cmd, arg )
 
+if(  ply:GetNWInt("Apartmentloaded")   ==   1    ) then print("apartmentwasloaded") return end
+
+if(  ply:GetPData("OwnBetaApartment")  == "true" ) then  GiveApartment(ply,"Beta")  end
+if(  ply:GetPData("OwnAlphaApartment") == "true" ) then  GiveApartment(ply,"Alpha") end
+if(  ply:GetPData("OwnDeltaApartment") == "true" ) then  GiveApartment(ply,"Delta") end
+if(  ply:GetPData("OwnGammaApartment") == "true" ) then  GiveApartment(ply,"Gamma") end
+
+
+
+
+
 for k,v in pairs( ents.GetAll() ) do
 
     if(v:GetNWString("DOwner") == ply:SteamID()) then DoorL = v:EntIndex() end
@@ -203,3 +293,4 @@ end
         end
     end
 end
+concommand.Add("LoadApartment",LoadApartment)

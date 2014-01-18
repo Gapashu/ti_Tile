@@ -28,6 +28,16 @@ table.insert(BDoors,v)
 PrintTable(BDoors)
 end
 
+for k,v in pairs(ents.FindByName("Delta*")) do
+table.insert(DDoors,v)
+PrintTable(DDoors)
+end
+
+for k,v in pairs(ents.FindByName("Gamma*")) do
+table.insert(GDoors,v)
+PrintTable(GDoors)
+end
+
 
 
 
